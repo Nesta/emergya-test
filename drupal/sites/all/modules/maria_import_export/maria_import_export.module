@@ -1,0 +1,77 @@
+<?php
+
+/**
+ * @file
+ * Allows administrators to inject VAR into the page output based on
+ * configurable rules. Useful for adding simple VAR tweaks without modifying
+ * a site's official theme.
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function maria_import_export_help($path, $arg) {
+  $output = '';
+  switch ($path) {
+    case 'admin/settings/modules#description':
+      $output .= t('Allows Import and Export variables based on configurable rules.');
+      break;
+    case 'admin/maria_import_export':
+      break;
+  }
+  return $output;
+}
+
+/**
+ * Implementation of hook_init().
+ * Checks to see whether any VAR files should be added to the current page,
+ * based on rules configured by the site administrator.
+ */
+function maria_import_export_init() {
+}
+
+/**
+ * Implementation of hook_menu().
+ * Defines menu callbacks for VAR Injector's configuration pages.
+ */ 
+function maria_import_export_menu() {
+  $items = array(
+    'admin/maria_import_export' => array(
+      'title' => 'Import & Export',
+      'description' => 'This module allows to import and export files of your web site.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('maria_import_export_admin_form'),
+      'access callback' => 'user_access',
+      'access arguments' => array('administer site configuration'),
+	  'type' => MENU_NORMAL_ITEM,
+	  'file' => 'maria_import_export.admin.inc',
+    ),
+    'admin/maria_import_export/import' => array(
+      'file' => 'maria_import_export.admin.inc',
+      'type' => MENU_CALLBACK,
+    ),
+    'admin/maria_import_export/export' => array(
+      'file' => 'maria_import_export.admin.inc',
+      'type' => MENU_CALLBACK,
+    ),
+  );
+  return $items;
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function maria_import_export_theme() {
+  $items['maria_import_export_admin_form'] = array(
+    'arguments' => array('form' => array()),
+    'file' => 'maria_import_export.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function maria_import_export_perm() {
+  return array('administer variables');
+}

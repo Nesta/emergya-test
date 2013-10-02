@@ -1,0 +1,73 @@
+<?php
+// $Id: maria_import_export.install,v 1.1.2.3 2010/03/07 23:59:47 eaton Exp $
+
+/**
+ * Implementation of hook_install().
+ */
+function maria_import_export_install() {
+  drupal_install_schema('maria_import_export');
+}
+
+/**
+ * Implementation of hook_schema().
+ */
+function maria_import_export_schema() {
+  $schema['maria_import_export_rule'] = array(
+    'fields' => array(
+      'crid' => array(
+        'description' => 'The primary identifier for the VAR injection rule',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+      'title' => array(
+        'description' => 'The descriptive title of the VAR injection rule',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE),
+      'rule_type' => array(
+        'description' => 'The type of rule to use when determining if the VAR should be injected',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0),
+      'rule_conditions' => array(
+        'description' => 'The data to evaluate when determining if the VAR should be injected',
+        'type' => 'text',
+        'not null' => TRUE),
+      'media' => array(
+        'description' => 'The media type of the VAR file (screen, print, etc.)',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE),
+      'preprocess' => array(
+        'description' => 'Whether the VAR file should be included by the VAR preprocessor',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0),
+    ),
+    'primary key' => array('crid'),
+  );
+  return $schema;
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function maria_import_export_uninstall() {
+  cache_clear_all('maria_import_export:*', 'cache', TRUE);
+  $results = db_query("SELECT * FROM {maria_import_export_rule}");
+  while ($rule = db_fetch_array($results)) {
+    file_delete(file_create_path($rule['file_path']));
+  }
+  db_query("DROP TABLE {maria_import_export_rule}");
+}
+
+/**
+ * Removes file path field from table
+ */
+function maria_import_export_update_6000() {
+  $ret = array();
+  db_drop_field($ret, 'maria_import_export_rule', 'file_path');
+  return $ret;
+}

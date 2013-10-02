@@ -1,0 +1,3 @@
+name = Import & Export
+package = "Configuration"
+core = 6.x
