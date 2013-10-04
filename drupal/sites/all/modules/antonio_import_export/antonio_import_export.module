@@ -1,0 +1,84 @@
+<?php
+
+/**
+ * @file
+ * Allows administrators to inject VAR into the page output based on
+ * configurable rules. Useful for adding simple VAR tweaks without modifying
+ * a site's official theme.
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function antonio_import_export_help($path, $arg) {
+  $output = '';
+  switch ($path) {
+    case 'admin/settings/modules#description':
+      $output .= t('Allows Import and Export variables based on configurable rules.');
+      break;
+    case 'admin/antonio_import_export':
+      break;
+  }
+  return $output;
+}
+
+/**
+ * Implementation of hook_init().
+ * Checks to see whether any VAR files should be added to the current page,
+ * based on rules configured by the site administrator.
+ */
+function antonio_import_export_init() {
+}
+
+/**
+ * Implementation of hook_menu().
+ * Defines menu callbacks for VAR Injector's configuration pages.
+ */
+function antonio_import_export_menu() {
+  $items = array(
+    'admin/antonio_import_export' => array(
+      'title' => 'Import & Export',
+	  'file' => 'antonio_import_export.admin.inc',	  
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('antonio_import_export_admin_form'),
+      'access callback' => 'user_access',
+	  'type' => MENU_NORMAL_ITEM,
+
+    ),
+    'admin/antonio_import_export/import' => array(
+      'title' => 'Import variables',
+      'file' => 'antonio_import_export.admin.inc',
+	  'page callback' => 'drupal_get_form',	
+	  'access callback' => TRUE,
+	  'page arguments' => array ('antonio_import_export_import'),
+      'type' => MENU_CALLBACK,
+    ),
+    'admin/antonio_import_export/export' => array(
+      'title' => 'Export variables',
+      'file' => 'antonio_import_export.admin.inc',
+	  'page callback' => 'drupal_get_form',	
+	  'access callback' => TRUE,
+	  'page arguments' => array (antonio_import_export_get_variables_to_export),
+      'type' => MENU_CALLBACK,
+    ),
+  );
+  return $items;
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function antonio_import_export_theme() {
+  $items['antonio_import_export_admin_form'] = array(
+    'arguments' => array('form' => array()),
+    'file' => 'antonio_import_export.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function antonio_import_export_perm() {
+  return array('administer variables');
+}
