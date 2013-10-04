@@ -1,18 +1,18 @@
 <?php
-// $Id: hp_import_export.install,v 1.1.2.3 2010/03/07 23:59:47 eaton Exp $
+// $Id: antonio_import_export.install,v 1.1.2.3 2010/03/07 23:59:47 eaton Exp $
 
 /**
  * Implementation of hook_install().
  */
-function hp_import_export_install() {
-  drupal_install_schema('hp_import_export');
+function antonio_import_export_install() {
+  drupal_install_schema('antonio_import_export');
 }
 
 /**
  * Implementation of hook_schema().
  */
-function hp_import_export_schema() {
-  $schema['hp_import_export_rule'] = array(
+function antonio_import_export_schema() {
+  $schema['antonio_import_export_rule'] = array(
     'fields' => array(
       'crid' => array(
         'description' => 'The primary identifier for the VAR injection rule',
@@ -54,20 +54,20 @@ function hp_import_export_schema() {
 /**
  * Implementation of hook_uninstall().
  */
-function hp_import_export_uninstall() {
-  cache_clear_all('hp_import_export:*', 'cache', TRUE);
-  $results = db_query("SELECT * FROM {hp_import_export_rule}");
+function antonio_import_export_uninstall() {
+  cache_clear_all('antonio_import_export:*', 'cache', TRUE);
+  $results = db_query("SELECT * FROM {antonio_import_export_rule}");
   while ($rule = db_fetch_array($results)) {
     file_delete(file_create_path($rule['file_path']));
   }
-  db_query("DROP TABLE {hp_import_export_rule}");
+  db_query("DROP TABLE {antonio_import_export_rule}");
 }
 
 /**
  * Removes file path field from table
  */
-function hp_import_export_update_6000() {
+function antonio_import_export_update_6000() {
   $ret = array();
-  db_drop_field($ret, 'hp_import_export_rule', 'file_path');
+  db_drop_field($ret, 'antonio_import_export_rule', 'file_path');
   return $ret;
 }

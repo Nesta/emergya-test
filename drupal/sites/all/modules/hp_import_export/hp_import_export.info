@@ -1,4 +1,0 @@
-name = HP Import Export
-description = Hp Import Export Variables.
-package = "Configuration"
-core = 6.x

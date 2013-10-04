@@ -1,0 +1,4 @@
+name = Antonio Import Export
+description = Antonio Import Export Variables.
+package = "Configuration"
+core = 6.x
